@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:CustomEntryControl.Helpers"
+             xmlns:ffSvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+             x:Class="CustomEntryControl.Helpers.CustomEntry">
+  <ContentView.Content>
+        <Frame x:Name="BorderFrame" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_Tapped"/>
+            </Frame.GestureRecognizers>
+            <Frame HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="FrameLayout" BackgroundColor="White">
+                <StackLayout Spacing="10" Orientation="Horizontal" HorizontalOptions="FillAndExpand" x:Name="StackLayout" VerticalOptions="Center">
+                    <ffSvg:SvgCachedImage x:Name="Icon" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start" 
+                                          VerticalOptions="Center" />
+                    <local:TransparentEntry x:Name="Entry" HorizontalOptions="FillAndExpand" Text="Teste" Focused="Entry_Focused" Unfocused="Entry_Unfocused" VerticalOptions="Center" />
+                </StackLayout>
+            </Frame>
+        </Frame>
+    </ContentView.Content>
+</ContentView>
