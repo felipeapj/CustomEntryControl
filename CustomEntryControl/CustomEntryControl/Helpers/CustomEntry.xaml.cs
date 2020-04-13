@@ -24,7 +24,7 @@ namespace CustomEntryControl.Helpers
         public Keyboard Keyboard { get; set; }
         public Thickness BorderWidth { get; set; }
         public bool Shadow { get; set; }
-        public EventHandler Completed {
+        public EventHandler Completed { //Not working
             get { return (EventHandler)base.GetValue(CompletedProperty); }
             set { base.SetValue(CompletedProperty, value); }
         }
