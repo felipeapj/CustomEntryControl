@@ -1,6 +1,10 @@
 ﻿using FFImageLoading.Svg.Forms;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,6 +20,7 @@ namespace CustomEntryControl.Helpers
             get { return base.GetValue(IconProperty).ToString(); }
             set { base.SetValue(IconProperty, value); }
         }
+        private static string iconPath { get; set; }
         public Color BorderColor { get; set; }
         public Thickness ContentPadding { get; set; }
         public Color BackgroundColor { get; set; }
@@ -29,6 +34,7 @@ namespace CustomEntryControl.Helpers
             set { base.SetValue(CompletedProperty, value); }
         }
         public ReturnType ReturnType { get; set; }
+        //TODO Fill svg icon with focused/unfocused colors
 
         public static readonly BindableProperty ReturnTypeProperty = BindableProperty.Create(
                                                          propertyName: "ReturnType",
@@ -142,6 +148,7 @@ namespace CustomEntryControl.Helpers
         private static void IconPropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (CustomEntry)bindable;
+            iconPath = newValue.ToString();
             control.Icon.Source = SvgImageSource.FromResource(newValue.ToString());
         }
 
@@ -195,31 +202,48 @@ namespace CustomEntryControl.Helpers
         private void Entry_Focused(object sender, FocusEventArgs e)
         {
             BorderFrame.BackgroundColor = FocusedBorderColor;
-            dict.Clear();
-            dict.Add("fill: rgb(0, 0, 0);", GetRGBFill(FocusedBorderColor));
-            Icon.ReplaceStringMap = dict;
         }
 
         private void Entry_Unfocused(object sender, FocusEventArgs e)
         {
             BorderFrame.BackgroundColor = BorderColor;
-            dict.Clear();
-            dict.Add("fill: rgb(0, 0, 0);", GetRGBFill(BorderColor));
-            Icon.ReplaceStringMap = dict;
         }
 
-        private void TapGestureRecognizer_Tapped(object sender, System.EventArgs e)
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             Entry.Focus();
         }
 
-        public string GetRGBFill(Color color)
+        public Dictionary<string, string> ReplaceSvgColor(Color color)
         {
+            dict.Clear();
             var red = (int)(color.R * 255);
             var green = (int)(color.G * 255);
             var blue = (int)(color.B * 255);
-            var rgbFill = $"fill: rgb({red},{green},{blue});";
-            return rgbFill;
+            var rgbFill = $"rgb({red},{green},{blue}) ";
+            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(CustomEntry)).Assembly;
+            Stream stream = assembly.GetManifestResourceStream(iconPath);
+            string text = "";
+            var rgbString = string.Empty;
+            using (var reader = new StreamReader(stream))
+            {
+                text = reader.ReadToEnd();
+                string[] strings = text.Split('\"');
+                foreach (var s in strings)
+                {
+                    if (s[0] == 'r' && s[1] == 'g' && s[2] == 'b')
+                    {
+                        rgbString = s;
+                    }
+                }
+                if (string.IsNullOrEmpty(rgbString))
+                {
+                    rgbFill = "path " + rgbFill;
+                    rgbString = "path";
+                }
+            }
+            dict.Add(rgbString, rgbFill);
+            return dict;
         }
 
     }
