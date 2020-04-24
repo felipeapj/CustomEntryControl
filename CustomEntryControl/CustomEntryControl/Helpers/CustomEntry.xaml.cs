@@ -24,9 +24,22 @@ namespace CustomEntryControl.Helpers
         public Keyboard Keyboard { get; set; }
         public Thickness BorderWidth { get; set; }
         public bool Shadow { get; set; }
-        public EventHandler Completed { //Not working
+        public EventHandler Completed {
             get { return (EventHandler)base.GetValue(CompletedProperty); }
             set { base.SetValue(CompletedProperty, value); }
+        }
+        public ReturnType ReturnType { get; set; }
+
+        public static readonly BindableProperty ReturnTypeProperty = BindableProperty.Create(
+                                                         propertyName: "ReturnType",
+                                                         returnType: typeof(ReturnType),
+                                                         declaringType: typeof(CustomEntry),
+                                                         defaultBindingMode: BindingMode.TwoWay,
+                                                         propertyChanged: ReturnTypePropertyChanged);
+        private static void ReturnTypePropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var control = (CustomEntry)bindable;
+            control.Entry.ReturnType = (ReturnType)newValue;
         }
 
         public static readonly BindableProperty CompletedProperty = BindableProperty.Create(
