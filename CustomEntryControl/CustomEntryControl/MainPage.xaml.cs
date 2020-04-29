@@ -16,6 +16,8 @@ namespace CustomEntryControl
         public MainPage()
         {
             InitializeComponent();
+            ViewModelM vM = new ViewModelM();
+            BindingContext = vM;
             CustomEntry.Completed = Entry_Completed;
         }
 

@@ -34,7 +34,37 @@ namespace CustomEntryControl.Helpers
             set { base.SetValue(CompletedProperty, value); }
         }
         public ReturnType ReturnType { get; set; }
+        public Color InvalidColor { get; set; }
+        private static Color invalidColor;
+        private static Color focusedValidColor;
+        public bool IsValid { get; set; } = true;
+        private static bool isValid;
+
+        public static readonly BindableProperty InvalidColorProperty = BindableProperty.Create(
+                                                         propertyName: "InvalidColor",
+                                                         returnType: typeof(Color),
+                                                         declaringType: typeof(CustomEntry),
+                                                         defaultValue: Color.Red,
+                                                         defaultBindingMode: BindingMode.TwoWay,
+                                                         propertyChanged: InvalidColorPropertyChanged);
+        private static void InvalidColorPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            invalidColor = (Color)newValue;
+        }
         //TODO Fill svg icon with focused/unfocused colors
+
+        public static readonly BindableProperty IsValidProperty = BindableProperty.Create(
+                                                         propertyName: "IsValid",
+                                                         returnType: typeof(bool),
+                                                         declaringType: typeof(CustomEntry),
+                                                         defaultBindingMode: BindingMode.TwoWay,
+                                                         propertyChanged: IsValidPropertyChanged);
+        private static void IsValidPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var control = (CustomEntry)bindable;
+            isValid = (bool)newValue;
+            control.BorderFrame.BackgroundColor = isValid ? focusedValidColor : invalidColor;
+        }
 
         public static readonly BindableProperty ReturnTypeProperty = BindableProperty.Create(
                                                          propertyName: "ReturnType",
@@ -107,6 +137,7 @@ namespace CustomEntryControl.Helpers
         {
             var control = (CustomEntry)bindable;
             control.FocusedBorderColor = (Color)newValue;
+            focusedValidColor = (Color)newValue;
         }
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(
@@ -135,7 +166,7 @@ namespace CustomEntryControl.Helpers
         private static void TextPropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (CustomEntry)bindable;
-            control.Entry.Text = newValue.ToString();
+            control.Entry.Text = (string)newValue;
         }
 
         public static readonly BindableProperty IconProperty = BindableProperty.Create(
@@ -196,17 +227,18 @@ namespace CustomEntryControl.Helpers
         }
         public CustomEntry()
         {
+            invalidColor = Color.Red;
             InitializeComponent();
         }
 
         private void Entry_Focused(object sender, FocusEventArgs e)
         {
-            BorderFrame.BackgroundColor = FocusedBorderColor;
+            BorderFrame.BackgroundColor = isValid ? FocusedBorderColor : invalidColor;
         }
 
         private void Entry_Unfocused(object sender, FocusEventArgs e)
         {
-            BorderFrame.BackgroundColor = BorderColor;
+            BorderFrame.BackgroundColor = isValid ? BorderColor : invalidColor;
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)

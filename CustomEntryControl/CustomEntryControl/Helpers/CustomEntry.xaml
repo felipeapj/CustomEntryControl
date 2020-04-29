@@ -16,7 +16,7 @@
                 <StackLayout Spacing="10" Orientation="Horizontal" HorizontalOptions="FillAndExpand" x:Name="StackLayout" VerticalOptions="Center">
                     <ffSvg:SvgCachedImage x:Name="Icon" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" HorizontalOptions="Start" 
                                           VerticalOptions="Center" />
-                    <local:TransparentEntry x:Name="Entry" HorizontalOptions="FillAndExpand" Text="Teste" Focused="Entry_Focused" Unfocused="Entry_Unfocused" VerticalOptions="Center" />
+                    <local:TransparentEntry x:Name="Entry" HorizontalOptions="FillAndExpand" Text="{Binding Text}" Focused="Entry_Focused" Unfocused="Entry_Unfocused" VerticalOptions="Center" />
                 </StackLayout>
             </Frame>
         </Frame>
