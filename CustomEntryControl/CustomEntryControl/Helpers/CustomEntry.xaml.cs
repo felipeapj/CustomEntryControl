@@ -228,6 +228,7 @@ namespace CustomEntryControl.Helpers
         public CustomEntry()
         {
             invalidColor = Color.Red;
+            isValid = true;
             InitializeComponent();
         }
 
